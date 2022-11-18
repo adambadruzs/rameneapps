@@ -4,26 +4,22 @@ import 'package:rameneapps/screens/register.dart';
 import 'package:rameneapps/shared_pref.dart';
 
 class Landing extends StatefulWidget {
-  const Landing({Key? key}) : super(key: key);
+  Function setTheme;
+  Landing({Key? key, required this.setTheme}) : super(key: key);
 
   @override
   State<Landing> createState() => _LandingState();
 }
 
 class _LandingState extends State<Landing> {
-  @override
-  void initState() {
-    super.initState();
-    // Obtain shared preferences.
-    SharedPref.pref.setString('isDarkMode', 'Ya ini seharusnya darkmode');
-    String isDarkmode = SharedPref.pref.getString('isDarkMode') as String;
-    print(isDarkmode);
+  ThemeData themeData = ThemeData.light();
 
-    SharedPref.pref.setString('isDarkMode', 'Ya ini seharusnya kuning');
-    print(isDarkmode);
+  void setTheme(bool isDarkmode) {
+    setState(() {
+      themeData = (isDarkmode) ? ThemeData.dark() : ThemeData.light();
+    });
   }
 
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(

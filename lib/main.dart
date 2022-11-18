@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:rameneapps/screens/HomePage.dart';
+import 'package:rameneapps/screens/Homi.dart';
 import 'package:rameneapps/screens/home.dart';
+import 'package:rameneapps/screens/login.dart';
 import 'package:rameneapps/screens/splash.dart';
 import 'package:rameneapps/shared_pref.dart';
 
@@ -53,7 +56,7 @@ class _MyAppState extends State<MyApp> {
       theme: themeData,
       /* fungsi set theme dijadikan sebuah parameter pada home page
       agar dapat dijalankan pada class tersebut */
-      home: Homes(setTheme: setTheme),
+      home: Homi(),
     );
   }
 }

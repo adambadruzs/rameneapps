@@ -1,57 +1,51 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:rameneapps/screens/landing.dart';
+import 'package:dio/dio.dart';
 import 'package:rameneapps/screens/login.dart';
-import 'package:rameneapps/constants.dart';
 
-class Register extends StatelessWidget {
+class Register extends StatefulWidget {
+  const Register({super.key});
+
+  @override
+  State<Register> createState() => _RegisterState();
+}
+
+class _RegisterState extends State<Register> {
+  TextEditingController controllerUsername = TextEditingController();
+  TextEditingController controllerPassword = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          backgroundColor: Colors.white,
-          leading: GestureDetector(
-            onTap: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => Landing()),
-              );
-            },
-            child: const Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-            ),
-          )),
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 25, vertical: 23),
+        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 23),
         child: Column(
           children: <Widget>[
-            Align(
-              alignment: Alignment.topLeft,
-              child: Column(
-                children: const <Widget>[
-                  Text(
-                    "Welcome Back",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontFamily: 'Poppins Bold',
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24,
-                    ),
-                  ),
-                  SizedBox(height: 3),
-                  Text("Login to yout account",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 17,
-                        fontFamily: 'Poppins Light',
-                      )),
-                ],
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Get Your Ramen",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontFamily: 'Poppins SemiBold',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                ),
               ),
             ),
-            SizedBox(height: 25),
+            const SizedBox(height: 3),
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Create your new account",
+                style: TextStyle(
+                  fontSize: 17,
+                  fontFamily: 'Poppins Light',
+                ),
+              ),
+            ),
+            const SizedBox(height: 25),
             TextField(
-              controller: null,
+              controller: controllerUsername,
               style: const TextStyle(
                 fontFamily: 'Poppins Light',
                 fontSize: 16,
@@ -60,20 +54,20 @@ class Register extends StatelessWidget {
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                labelText: "Email Address",
-                hintText: "Email Address",
+                labelText: "Username",
+                hintText: "Username",
                 contentPadding:
-                    EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
                 hintStyle: const TextStyle(
                   fontFamily: 'Poppins Light',
                   fontSize: 16,
                 ),
               ),
             ),
-            SizedBox(height: 18),
+            const SizedBox(height: 18),
             TextField(
               obscureText: true,
-              controller: null,
+              controller: controllerPassword,
               style: const TextStyle(
                 fontFamily: 'Poppins Light',
                 fontSize: 16,
@@ -85,58 +79,42 @@ class Register extends StatelessWidget {
                 labelText: "Password",
                 hintText: "Password",
                 contentPadding:
-                    EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
                 hintStyle: const TextStyle(
                   fontFamily: 'Poppins Light',
                   fontSize: 16,
-                ),
-              ),
-            ),
-            SizedBox(height: 18),
-            TextField(
-              obscureText: true,
-              controller: null,
-              style: const TextStyle(
-                fontFamily: 'Poppins Light',
-                fontSize: 16,
-              ),
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                labelText: "Confirm Password",
-                hintText: "Confirm Password",
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-                hintStyle: const TextStyle(
-                  fontFamily: 'Poppins Light',
-                  fontSize: 16,
-                ),
-              ),
-            ),
-            SizedBox(height: 15),
-            const Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                "Forgot password?",
-                style: TextStyle(
-                  color: Colors.orangeAccent,
-                  fontSize: 16,
-                  fontFamily: 'Poppins Light',
                 ),
               ),
             ),
             const Spacer(),
             ElevatedButton(
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => Login()),
-                );
+              onPressed: () async {
+                var username = await Dio().get(
+                    'http://localhost:3000/user?username=${controllerUsername.text}');
+                var password = await Dio().get(
+                    'http://localhost:3000/user?password=${controllerPassword.text}');
+
+                if (username.data.length > 0) {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    backgroundColor: Colors.red,
+                    content: Text("Username Already Exist"),
+                  ));
+                  controllerUsername.clear();
+                  controllerPassword.clear();
+                } else {
+                  var response = await Dio().post('http://localhost:3000/user',
+                      data: {
+                        "username": controllerUsername.text,
+                        "password": controllerPassword.text
+                      });
+
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Login()));
+                }
               },
               child: const Text("SIGN UP",
                   style: TextStyle(
-                    fontFamily: 'Poppins Bold',
+                    fontFamily: 'Poppins SemiBold',
                     fontSize: 18,
                   )),
               style: ElevatedButton.styleFrom(
@@ -150,21 +128,20 @@ class Register extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Already Have An Account?",
+                const Text("Already have an account?",
                     style: TextStyle(
                       fontFamily: 'Poppins Light',
                       fontSize: 16,
                       color: Colors.grey,
                     )),
-                SizedBox(width: 7),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => Login()),
-                    );
+                const SizedBox(width: 7),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => const Login(),
+                    ));
                   },
-                  child: Text("Sign In",
+                  child: const Text("Sign in",
                       style: TextStyle(
                         fontFamily: 'Poppins Light',
                         fontSize: 16,

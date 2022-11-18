@@ -8,21 +8,22 @@ import 'package:rameneapps/shared_pref.dart';
 
 import '../nav-drawer.dart';
 
-class Homes extends StatefulWidget {
+class Home extends StatefulWidget {
   Function setTheme;
-  Homes({Key? key, required this.setTheme}) : super(key: key);
+
+  Home({Key? key, required this.setTheme}) : super(key: key);
 
   @override
-  State<Homes> createState() => _HomesState();
+  State<Home> createState() => _Hometate();
 }
 
-class _HomesState extends State<Homes> {
+class _Hometate extends State<Home> {
   bool isDarkmode = SharedPref.pref?.getBool('isDarkmode') ?? false;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   List pages = [
-    const ContainerHome(),
+    ContainerHome(),
     Chat(),
     Order(),
     Profile(),
@@ -70,32 +71,13 @@ class _HomesState extends State<Homes> {
         ],
       ),
       drawer: DrawerWidget(),
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: onTap,
-        currentIndex: currentIndex,
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined), label: 'Home'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.chat_outlined), label: 'Chat'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_basket_outlined), label: 'Order'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline), label: 'Profile'),
-        ],
-        selectedItemColor: orangeAccent,
-        unselectedItemColor: lightGrey,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        elevation: 0,
-      ),
       body: pages.elementAt(currentIndex),
     );
   }
 }
 
 class ContainerHome extends StatelessWidget {
-  const ContainerHome({
+  ContainerHome({
     Key? key,
   }) : super(key: key);
 
